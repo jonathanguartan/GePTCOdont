@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Consultas</title>
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/global.css">
+	<script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+</head>
+<body>
+
+    <script>
+
+        function verPorPaciente(){
+
+            $('#ventanaConsultaPaciente').window('close');
+
+            var fila = $('#datagridPorPaciente').datagrid('getSelected');
+            if(fila == null) return;
+
+            $('#ventanaConsulta').window('refresh', '/consultas/form/' + fila.nro_consulta + '/');
+            $('#ventanaConsulta').window('setTitle', 'Ver consulta');
+            $('#ventanaConsulta').window('open');
+
+        }
+
+        function imprimirPorPaciente(){
+            var query = '{{ paciente }}';
+            var medico = $('#medicoConsulta').combobox('getValue')
+            var fecha_hora = '';
+
+            $('#datagrid').datagrid('load', {
+                query: query,
+                medico: medico,
+                fecha_hora: fecha_hora
+            });
+            var uri = 'query=' + encodeURI(query) + '&medico=' + encodeURI(medico) + '&fecha_hora=' + encodeURI(fecha_hora)
+            var win = window.open('/consultas/imprimir?' + uri);
+        }
+
+    </script>
+
+
+	<h2>Consultas del Paciente</h2>
+
+	<div style="margin:10px 0;"></div>
+
+    <!-- Tabla donde se muestran los datos-->
+    <div align="center">
+        <div id="toolbarPorPaciente" style="padding:5px; height:auto">
+            <div style="margin-bottom:5px; display: inline-block; vertical-align: middle; width: 40%">
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="view" plain="true" onclick="verPorPaciente()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="imprimirPorPaciente()"></a>
+            </div>
+        </div>
+        <table id="datagridPorPaciente" class="easyui-datagrid" title="Listado de Consultas" style="width:700px;  height:400px; "
+            rownumbers="true" fitColumns="true" striped="true" nowrap="false" toolbar="#toolbarPorPaciente"
+               data-options="singleSelect:true, collapsible:false, url:'/consultas/leer/{{ paciente }}/', method:'get', pagination:true,
+                    pageSize:10">
+            <thead>
+                <tr>
+                    <th data-options="field:'fecha_hora', width:38" ><strong>Fecha y Hora</strong></th>
+                    <th data-options="field:'paciente_id', width:35" ><strong>H. Clinica</strong></th>
+                    <th data-options="field:'paciente', width:60" ><strong>Paciente</strong></th>
+                    <th data-options="field:'medico', width:60" ><strong>Médico</strong></th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+
+</body>
+</html>

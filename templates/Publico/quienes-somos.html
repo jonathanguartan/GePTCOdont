@@ -1,0 +1,178 @@
+{% extends 'Publico/container.html' %}
+
+{% block head %}
+<script>
+    jQuery(function($) {
+        'use strict';
+        if ($.fn.slider) {
+            $(".art-slidecontainerConsultorioOdontologicoFDG").each(function () {
+                var slideContainer = $(this), tmp;
+                var inner = $(".art-slider-inner", slideContainer);
+                var helper = null;
+
+                if ($.support.transition) {
+                    helper = new BackgroundHelper();
+                    helper.init("fade", "next", $(".art-slide-item", inner).first().css($.support.transition.prefix + "transition-duration"));
+                    inner.children().each(function () {
+                        helper.processSlide($(this));
+                    });
+
+                }
+
+
+                inner.children().eq(0).addClass("active");
+                slideContainer.slider({
+                    pause: 2600,
+                    speed: 600,
+                    repeat: true,
+                    animation: "fade",
+                    direction: "next",
+                    navigator: slideContainer.siblings(".art-slidenavigatorConsultorioOdontologicoFDG"),
+                    helper: helper
+                });
+            });
+        }
+    });
+</script>
+
+<style>
+    .art-content .art-postcontent-0 .layout-item-0 { padding-right: 10px;padding-left: 10px;  }
+    .ie7 .art-post .art-layout-cell {border:none !important; padding:0 !important; }
+    .ie6 .art-post .art-layout-cell {border:none !important; padding:0 !important; }
+
+    .art-slidecontainerConsultorioOdontologicoFDG {
+        position: relative;
+        width: 393px;
+        height: 379px;
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .art-slide-item{
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .art-slide-item {
+        -webkit-transition: 600ms ease-in-out opacity;
+        -moz-transition: 600ms ease-in-out opacity;
+        -ms-transition: 600ms ease-in-out opacity;
+        -o-transition: 600ms ease-in-out opacity;
+        transition: 600ms ease-in-out opacity;
+        position: absolute;
+        display: none;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width:  100%;
+        height: 100%;
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .active, .art-slidecontainerConsultorioOdontologicoFDG .next, .art-slidecontainerConsultorioOdontologicoFDG .prev {
+        display: block;
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .active {
+        opacity: 1;
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .next, .art-slidecontainerConsultorioOdontologicoFDG .prev {
+        width: 100%;
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .next.forward, .art-slidecontainerConsultorioOdontologicoFDG .prev.back {
+        opacity: 1;
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .active.forward {
+        opacity: 0;
+    }
+
+    .art-slidecontainerConsultorioOdontologicoFDG .active.back {
+        opacity: 0;
+    }
+
+
+    .art-slideConsultorioOdontologicoFDG0 {
+        background-image:  url('/static/images/publico/slideConsultorioOdontologicoFDG0.png');
+        background-size:  100%;
+        background-position:  0 0;
+        background-repeat: no-repeat;
+    }
+    .art-slideConsultorioOdontologicoFDG1 {
+        background-image:  url('/static/images/publico/slideConsultorioOdontologicoFDG1.png');
+        background-size:  100%;
+        background-position:  0 0;
+        background-repeat: no-repeat;
+    }
+
+    .art-slidenavigatorConsultorioOdontologicoFDG {
+        display: inline-block;
+        position: absolute;
+        direction: ltr !important;
+        top: 355px;
+        left: 88.8%;
+        z-index: 101;
+        line-height: 0 !important;
+        -webkit-background-origin: border !important;
+        -moz-background-origin: border !important;
+        background-origin: border-box !important;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .art-slidenavigatorConsultorioOdontologicoFDG {
+        background: #7CCDF8;background: linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -webkit-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -moz-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -o-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -ms-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;-svg-background: linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;
+        -webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px; padding:7px;
+    }
+    .art-slidenavigatorConsultorioOdontologicoFDG > a {
+        background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;-svg-background: #0C95DF;
+        -webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%; margin:0 10px 0 0;width: 10px;height: 10px;
+    }
+    .art-slidenavigatorConsultorioOdontologicoFDG > a.active {
+        background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;-svg-background: #77BAFE;
+        -webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%; margin:0 10px 0 0; width: 10px; height: 10px;
+    }
+    .art-slidenavigatorConsultorioOdontologicoFDG > a:hover {
+        background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;-svg-background: #0275E8;
+        -webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%; margin:0 10px 0 0; width: 10px; height: 10px;
+    }
+
+</style>
+
+{% endblock head %}
+
+
+{% block menuQuienesSomos %}
+    class="active"
+{% endblock menuQuienesSomos %}
+
+
+{% block contenido %}
+    <div class="art-layout-cell layout-item-0" style="width: 100%" >
+        <p style="text-align: justify;"><span style="font-weight: bold;"></span></p><div id="ConsultorioOdontologicoFDG" style="position: relative; display: inline-block; z-index: 0; margin-top: 0px; margin-right: 10px; margin-bottom: 0px; margin-left: 0px;  border-style: solid; border-color: #000000; border-width: 3px;  float: left;" class="art-collage">
+<div class="art-slider art-slidecontainerConsultorioOdontologicoFDG" data-width="393" data-height="379">
+    <div class="art-slider-inner">
+<div class="art-slide-item art-slideConsultorioOdontologicoFDG0">
+
+</div>
+<div class="art-slide-item art-slideConsultorioOdontologicoFDG1">
+
+</div>
+
+    </div>
+</div>
+<div class="art-slidenavigator art-slidenavigatorConsultorioOdontologicoFDG" data-left="88.8">
+<a href="#" class="art-slidenavigatoritem"></a><a href="#" class="art-slidenavigatoritem"></a>
+</div>
+
+
+
+    </div>
+    <p style="text-align: justify;"><span style="font-weight: bold;"></span></p><p style="text-align: justify;"><span style="font-family: Arial;">Somos un equipo de dentistas en Machala dedicados a brindar
+         servicios de alta calidad, con materiales de última generación y técnicas y
+         procedimientos actuales y de avanzada, seguimos estrictos protocolos de
+         bioseguridad y esterilización para garantizarte una atención completamente
+         segura y efectiva, tenemos especial esmero en brindarte una atención agradable
+         para lo cual contamos con amplios y cómodos espacios, y equipo modernos.<br></span></p><p style="text-align: justify;"><span style="font-family: Arial;"><span style="color: rgb(1, 54, 106); font-size: 16px; font-weight: bold;">Misión</span><br></span></p><p style="text-align: justify;"><span style="font-family: Arial;">Somos una empresa constituida por un alto personal capacitado para satisfacer las necesidades de nuestros clientes. Estamos comprometidos con el bienestar de nuestra gente, ofreciendo los mejores servicios dentales, generando rentabilidad para los socios y el personal.<br></span></p><p style="text-align: justify;"><span style="font-family: Arial;"><span style="color: rgb(1, 54, 106); font-size: 16px; font-weight: bold;">Visión</span><span style="font-weight: bold;"><br></span></span></p><p style="text-align: justify;"><span style="font-family: Arial;">Ser una empresa líder en servicios odontológicos a nivel nacional y de mayor credibilidad para el cliente final.&nbsp;</span><br></p><p style="text-align: justify;"><br></p>
+    </div>
+{% endblock contenido %}

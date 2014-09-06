@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Servicios</title>
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/global.css">
+	<script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+</head>
+<body>
+
+    <script>
+        function buscar(){
+            
+            var query = $('#queryTurno').searchbox('getValue');
+            var medico = $('#medico').combobox('getValue')
+            var fecha_hora = $('#fecha_hora').datebox('getValue');
+            var cumplido = $('#cumplido').combobox('getValue');
+
+            $('#datagrid').datagrid('load', {
+                query: query,
+                medico: medico,
+                fecha_hora: fecha_hora,
+                cumplido: cumplido
+            });
+        }
+
+        function nuevo(){
+            $('#ventanaTurno').window('refresh', '/turnos/form/');
+            $('#ventanaTurno').window('open');
+        }
+
+        function editar(){
+
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            if( fila.cumplido == 'No' ){
+                $('#ventanaTurno').window('refresh', '/turnos/form/' + fila.nro_turno + '/');
+                $('#ventanaTurno').window('setTitle', 'Editar turno');
+                $('#ventanaTurno').window('open');
+            }
+            else{
+                $.messager.show({
+                    title: 'Error',
+                    msg: 'Este turno no puede ser editado por que ya fue consultado'
+                });
+            }
+        }
+
+        function eliminar(){
+
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            if( fila.cumplido == 'No' ){
+                $.messager.confirm('Eliminar Turno', 'Esta seguro que desea eliminar este turno?', function(r){
+                if (r){
+                    jQuery.ajax({
+                        type: "POST",
+                        url: '/turnos/eliminar/',
+                        data: {
+                            id: fila.id
+                        },
+                        success: function(result){
+
+                            var result = eval('(' + result + ')');
+
+                            if (result) {
+                                $('#ventanaTurno').dialog('close');
+                                $('#datagrid').datagrid('reload');
+
+                                $.messager.show({
+                                    title: 'Ok',
+                                    msg: 'Se ha eliminado con exito'
+                                });
+                            }
+                            else {
+                                $.messager.show({
+                                    title: 'Error',
+                                    msg: 'Hubo un error al eliminar'
+                                });
+                            }
+                        },
+                        dataType: 'json'
+                    });
+                }
+            });
+            }
+            else{
+                $.messager.show({
+                    title: 'Error',
+                    msg: 'Este turno no puede ser eliminado por que ya fue consultado'
+                });
+            }
+        }
+
+        function imprimir(){
+            var query = $('#queryTurno').searchbox('getValue');
+            var medico = $('#medico').combobox('getValue')
+            var fecha_hora = $('#fecha_hora').datebox('getValue');
+            var cumplido = $('#cumplido').combobox('getValue');
+
+            $('#datagrid').datagrid('load', {
+                query: query,
+                medico: medico,
+                fecha_hora: fecha_hora,
+                cumplido: cumplido
+            });
+            var uri = 'query=' + encodeURI(query) + '&medico=' + encodeURI(medico) + '&fecha_hora=' + encodeURI(fecha_hora) + '&cumplido=' + encodeURI(cumplido)
+            var win = window.open('/turnos/imprimir?' + uri);
+        }
+
+        function asignar_consulta(){
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            if( fila.cumplido == 'No' ){
+                $('#ventanaConsulta').window('refresh', '/consultas/form/?turno=' + fila.nro_turno + '&medico_id=' + encodeURI(fila.medico_id) + '&paciente_id=' + encodeURI(fila.paciente_id) );
+                $('#ventanaConsulta').window('open');
+            }
+            else{
+                $.messager.show({
+                    title: 'Error',
+                    msg: 'Este turno ya fue consultado'
+                });
+            }
+        }
+    </script>
+
+
+	<h2>Turnos</h2>
+
+	<div style="margin:10px 0;"></div>
+
+
+    <!-- Tabla donde se muestran los datos-->
+    <div align="center">
+
+        <div id="toolbar" style="padding:5px; height:auto">
+            <div style="margin-bottom:5px; display: inline-block; vertical-align: middle;">
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="nuevo()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editar()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="eliminar()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="imprimir()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="plant" plain="true" onclick="asignar_consulta()"></a>
+            </div>
+            <div style="text-align: right; display: inline-block; vertical-align: middle; float: right; margin-right: 5px;">
+                <input id="queryTurno" class="easyui-searchbox" style="width: 400px;" data-options="prompt:'Por favor ingrese un valor', searcher:buscar"  />
+            </div>
+            <div>
+                <div style="text-align: right; display: inline-block; vertical-align: middle; width: 38%">
+                    <span>Medico: </span>
+                    <select class="easyui-combobox" data-options="editable:false" id="medico" {% if usuario.login != 'Administrador' %} readonly {% endif %}>
+                        <option value="">Todos</option>
+                        {% for med in medicos %}
+                            {% if med.cedula == usuario.cedula and usuario.login != 'Administrador' %}
+                                <option value="{{ med.cedula }}" selected="selected">{{ med.apellidos }} {{ med.nombres }}</option>
+                            {% else %}
+                                <option value="{{ med.cedula }}">{{ med.apellidos }} {{ med.nombres }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="text-align: right; display: inline-block; vertical-align: middle; width: 28%">
+                    <span>Fecha: </span>
+                    <input class="easyui-datebox" data-options="formatter:myformatterdate,parser:myparserdate,editable:false" id="fecha_hora"  />
+                </div>
+                <div style="text-align: right; display: inline-block; vertical-align: middle; width: 18%">
+                    <span>Cumplido: </span>
+                    <select class="easyui-combobox" data-options="editable:false" id="cumplido">
+                        <option value="">Todos</option>
+                        <option value="0">No</option>
+                        <option value="1">Sí</option>
+                    </select>
+                </div>
+                <div style="text-align: right; display: inline-block; vertical-align: middle; width: 10%;">
+                    <a class="easyui-linkbutton" onclick="buscar();">Buscar</a>
+                </div>
+            </div>
+        </div>
+
+        <table id="datagrid" class="easyui-datagrid" title="Listado de Turnos" style="width:700px;  height:400px; "
+            rownumbers="true" fitColumns="true" striped="true" nowrap="false" toolbar="#toolbar"
+               data-options="singleSelect:true, collapsible:false, url:'/turnos/leer/', method:'get', pagination:true,
+                    pageSize:10">
+            <thead>
+                <tr>
+                    <th data-options="field:'nro_turno', width:16" ><strong>Nro</strong></th>
+                    <th data-options="field:'fecha_hora', width:38" ><strong>Fecha y Hora</strong></th>
+                    <th data-options="field:'paciente', width:60" ><strong>Paciente</strong></th>
+                    <th data-options="field:'medico', width:60" ><strong>Médico</strong></th>
+                    <th data-options="field:'cumplido', width:18" ><strong>Cumplido</strong></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+
+    <!-- ventanaTurno donde se abrira las ventana -->
+    <div id="ventanaTurno" class="easyui-window" title="Turnos" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:470px; height:205px; padding:10px;">
+	</div>
+</body>
+</html>

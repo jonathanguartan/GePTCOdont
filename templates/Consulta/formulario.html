@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8">
+        <title>Servicio</title>
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/global.css">
+        <script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            function guardar(){
+
+                $('#formularioConsulta').form('submit', {
+                    url: "/consultas/guardar/",
+                    queryParams: {
+                        servicios: JSON.stringify($('#servicios_consulta').datagrid('getData').rows),
+                        productos: JSON.stringify($('#productos_consulta').datagrid('getData').rows)
+                    },
+                    onSubmit: function() {
+                        return $(this).form('validate');
+                    },
+                    success: function(result) {
+
+                        var result = eval('(' + result + ')');
+
+                        if (result) {
+                            $('#ventanaConsulta').dialog('close');
+
+                            $('#datagrid').datagrid('reload');
+
+                            $.messager.show({
+                                title: 'Ok',
+                                msg: 'Se ha guardado con exito'
+                            });
+
+                            var win = window.open('/consultas/imprimir/' + result + '/?');
+                        }
+                        else {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: 'Hubo un error al guardar'
+                            });
+                        }
+                    }
+                });
+            }
+
+            function cancelar(){
+                $('#ventanaConsulta').dialog('close');
+            }
+
+
+            function historial(){
+                var paciente = $('#paciente_consulta').combobox('getValue')
+
+                $('#ventanaConsultaPaciente').window('refresh', '/consultas/paciente/' + paciente + '/');
+                $('#ventanaConsultaPaciente').window('open');
+            }
+
+
+            function imprimirUno(){
+                var nro = $('#nro_consulta').val()
+                var win = window.open('/consultas/imprimir/' + nro + '/');
+            }
+
+
+            function seleccionarServicio(actual){
+                var servicios = {
+                    {% for ser in servicios %}
+                        '{{ ser.id }}': {
+                            nombre: '{{ ser.nombre }}',
+                            precio: {{ ser.precio }}
+                        },
+                    {% endfor %}
+                };
+
+                $('#servicio_precio_consulta').numberbox('setValue', servicios[actual].precio);
+            }
+
+
+            function seleccionarProducto(actual){
+                var productos = {
+                    {% for pro in productos %}
+                        '{{ pro.id }}': {
+                            nombre: '{{ pro.nombre }}',
+                            precio: {{ pro.precio }},
+                            cantidad: {{ pro.cantidad }}
+                        },
+                    {% endfor %}
+                };
+
+                $('#producto_precio_consulta').numberbox('setValue', productos[actual].precio);
+                $('#producto_cantidad_consulta').numberbox('options').max = productos[actual].cantidad;
+                $('#producto_cantidad_consulta').numberbox('setValue', 1);
+                $('#producto_cantidad_maxima_consulta').numberbox('setValue', productos[actual].cantidad);
+                $('#producto_total_consulta').numberbox('setValue', productos[actual].precio);
+            }
+
+
+            function validarCantidadProducto(actual, anterior){
+                var cant = actual;
+                var cant_max = $('#producto_cantidad_maxima_consulta').numberbox('getValue');
+                var prec = $('#producto_precio_consulta').numberbox('getValue');
+
+                if ( parseFloat(cant) > parseFloat(cant_max) ) {
+                    $.messager.show({
+                        title: 'Error',
+                        msg: 'Cantidad no válida. La cantidad maxima es el límite disponible'
+                    });
+
+                    $('#producto_cantidad_consulta').numberbox('setValue', cant_max);
+                }
+
+                $('#producto_total_consulta').numberbox('setValue', parseFloat(cant * cant_max));
+
+            }
+
+
+            function agregarServicioConsulta(){
+                var rows = $('#servicios_consulta').datagrid('getData').rows;
+                for(r in rows){
+                    if($('#servicio_consulta').combobox('getValue') == rows[r].servicio_id){
+                        $.messager.show({
+                            title: 'Error',
+                            msg: 'Servicio ya se encuentra ingresado'
+                        });
+
+                        return false;
+                    }
+                }
+
+                var data = {
+                    servicio_id: $('#servicio_consulta').combobox('getValue'),
+                    servicio_nombre: $('#servicio_consulta').combobox('getText'),
+                    servicio_precio: $('#servicio_precio_consulta').numberbox('getValue')
+                }
+                $('#servicios_consulta').datagrid('appendRow', data);
+
+                //Recalculamos total
+                var total = parseFloat( $('#total_consulta').numberbox('getValue') ) + parseFloat( data.servicio_precio );
+                $('#total_consulta').numberbox('setValue',total);
+            }
+
+
+            function agregarProductoConsulta(){
+                var rows = $('#productos_consulta').datagrid('getData').rows;
+                for(r in rows){
+                    if($('#producto_consulta').combobox('getValue') == rows[r].producto_id){
+                        $.messager.show({
+                            title: 'Error',
+                            msg: 'Producto ya se encuentra ingresado'
+                        });
+
+                        return false;
+                    }
+                }
+
+                var data = {
+                    producto_id: $('#producto_consulta').combobox('getValue'),
+                    producto_nombre: $('#producto_consulta').combobox('getText'),
+                    producto_cantidad: $('#producto_cantidad_consulta').numberbox('getValue'),
+                    producto_precio: $('#producto_precio_consulta').numberbox('getValue'),
+                    producto_total: $('#producto_total_consulta').numberbox('getValue')
+                }
+                $('#productos_consulta').datagrid('appendRow', data);
+
+                //Recalculamos total
+                var total = parseFloat( $('#total_consulta').numberbox('getValue') ) + parseFloat( data.producto_total );
+                $('#total_consulta').numberbox('setValue',total);
+            }
+
+
+            function quitarServicioConsulta(){
+                var fila = $('#servicios_consulta').datagrid('getSelected');
+
+                if(!fila){
+                    $.messager.show({
+                            title: 'Error',
+                            msg: 'Seleccione un servicio'
+                        });
+                }
+                else{
+                    var rows = $('#servicios_consulta').datagrid('getData').rows;
+
+                    for(var r=0; r<rows.length; r++){
+                        if(fila.servicio_id == rows[r].servicio_id){
+                            $('#servicios_consulta').datagrid('deleteRow', r);
+
+                            //Recalculamos total
+                            var total = parseFloat( $('#total_consulta').numberbox('getValue') ) - parseFloat( fila.servicio_precio );
+                            $('#total_consulta').numberbox('setValue',total);
+
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+
+            function quitarProductoConsulta(){
+                var fila = $('#productos_consulta').datagrid('getSelected');
+
+                if(!fila){
+                    $.messager.show({
+                            title: 'Error',
+                            msg: 'Seleccione un servicio'
+                        });
+                }
+                else{
+                    var rows = $('#productos_consulta').datagrid('getData').rows;
+
+                    for(var r=0; r<rows.length; r++){
+                        if(fila.producto_id == rows[r].producto_id){
+                            $('#productos_consulta').datagrid('deleteRow', r);
+
+                            //Recalculamos total
+                            var total = parseFloat( $('#total_consulta').numberbox('getValue') ) - parseFloat( fila.producto_total );
+                            $('#total_consulta').numberbox('setValue',total);
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+        </script>
+        <div>
+            <form id="formularioConsulta" method="post" novalidate="novalidate">
+                <table>
+                    {% if turno != False %}
+                        <tr>
+                            <td colspan="4"><input type="hidden" name="nro_turno"  value="{{ turno }}" /></td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td style="min-width: 100px">Nro: </td>
+                        <td style="width: 45%; min-width: 430px;"><input class="easyui-validatebox" type="text" name="nro_consulta" id="nro_consulta" data-options="" value="{{ objeto.nro_consulta }}" maxlength="60" size="60" readonly /></td>
+                        <td style="min-width: 100px">Fecha y hora: </td>
+                        <td style="width: 45%; min-width: 430px;">
+                            <input class="easyui-datetimebox" data-options="required:true,formatter:myformatterdatetime,parser:myparserdatetime,editable:false" id="fecha_hora_formulario" name="fecha_hora" value="{{ objeto.fecha_hora }}" style="width: 200px" readonly  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Paciente: </td>
+                        <td>
+                            <select class="easyui-combobox" data-options="required:true,editable:false" name="paciente" id="paciente_consulta" readonly >
+                                {% for pac in pacientes %}
+                                    {% if pac.nro_historia == objeto.paciente or pac.nro_historia == paciente_id %}
+                                        <option value="{{ pac.nro_historia }}" selected="selected">{{ pac.apellidos }} {{ pac.nombres }}</option>
+                                    {% else %}
+                                        <option value="{{ pac.nro_historia }}">{{ pac.apellidos }} {{ pac.nombres }}</option>
+                                    {%  endif %}
+                                {% endfor %}
+                            </select>
+                            <a onclick="
+                                var nro_historia = $('#paciente_consulta').combobox('getValue');
+                                $('#ventanaPaciente').window('refresh', '/pacientes/form/' + nro_historia + '/');
+                                $('#ventanaPaciente').window('open');
+                            " class="easyui-linkbutton">Ver Paciente</a>
+                        </td>
+                        <td>Medico: </td>
+                        <td>
+                            <select class="easyui-combobox" data-options="required:true,editable:false" name="medico" value="{{ objeto.medico }}" {% if usuario.login != 'Administrador' or objeto.medico != None %} readonly {% endif %} >
+                                {% for med in medicos %}
+                                    {% if med.cedula == objeto.medico or med.cedula == medico_id %}
+                                        <option value="{{ med.cedula }}" selected="selected">{{ med.apellidos }} {{ med.nombres }}</option>
+                                    {% else %}
+                                        <option value="{{ med.cedula }}">{{ med.apellidos }} {{ med.nombres }}</option>
+                                    {%  endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Diagnostico: </td>
+                        <td><textarea class="easyui-validatebox" type="text" name="diagnostico" data-options="" rows="3" style="width:90%" {% if objeto.diagnostico != None %} readonly {% endif %} >{{ objeto.diagnostico }}</textarea></td>
+                        <td>Observación: </td>
+                        <td><textarea class="easyui-validatebox" type="text" name="observacion" data-options="" rows="3" style="width:90%" {% if objeto.observacion != None %} readonly {% endif %} >{{ objeto.observacion }}</textarea></td>
+                    </tr>
+                </table>
+                <div class="easyui-tabs">
+                    <div title="Servicios">
+                        {% if turno != False %}
+                            <div>
+                                <table>
+                                    <tr>
+                                        <td>Servicio</td>
+                                        <td style="width: 175px">
+                                            <select class="easyui-combobox" data-options="required:true, onChange:seleccionarServicio, editable:false " id="servicio_consulta" style="width: 150px" >
+                                                {% for ser in servicios %}
+                                                    <option value="{{ ser.id }}">{{ ser.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+
+                                        <td>Precio: </td>
+                                        <td><input class="easyui-numberbox" id="servicio_precio_consulta" data-options="precision:2, min:0" value="{{ servicios.0.precio }}" readonly /></td>
+
+                                        <td><a class="easyui-linkbutton" onclick="agregarServicioConsulta();" iconCls="icon-add" plain="true">Agregar</a></td>
+                                        <td><a class="easyui-linkbutton" onclick="quitarServicioConsulta();" iconCls="icon-remove" plain="true">Quitar</a></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        {% endif %}
+                        <table class="easyui-datagrid" title="" style="width:100%; height:200px" id="servicios_consulta" data-options="singleSelect:true">
+                            <thead>
+                                <tr>
+                                    <th data-options="field:'servicio_id',width:100,align:'center'">Código</th>
+                                    <th data-options="field:'servicio_nombre',width:350,align:'left'">Servicio</th>
+                                    <th data-options="field:'servicio_precio',width:200,align:'right'">Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for servicio in objeto.servicios %}
+                                    <tr>
+                                        <td>{{ servicio.servicio_id }}</td>
+                                        <td>{{ servicio.servicio_nombre }}</td>
+                                        <td>{{ servicio.servicio_precio }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div title="Productos">
+                        {% if turno != False %}
+                            <div>
+                                <table>
+                                    <tr>
+                                        <td>Producto</td>
+                                        <td style="width: 175px">
+                                            <select class="easyui-combobox" data-options="required:true, onChange:seleccionarProducto, editable:false " id="producto_consulta" style="width: 150px" >
+                                                {% for pro in productos %}
+                                                    <option value="{{ pro.id }}">{{ pro.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+
+                                        <td>Precio: </td>
+                                        <td><input class="easyui-numberbox" id="producto_precio_consulta" data-options="precision:2, min:0" value="{{ productos.0.precio }}" readonly /></td>
+
+                                        <td>Cantidad: </td>
+                                        <td><input class="easyui-numberbox" id="producto_cantidad_consulta" data-options="precision:2, min:0, max:{{ productos.0.cantidad }}, onChange:validarCantidadProducto" value="1" /></td>
+
+                                        <td>Cantidad máxima: </td>
+                                        <td><input class="easyui-numberbox" id="producto_cantidad_maxima_consulta" data-options="precision:2, min:0" value="{{ productos.0.cantidad }}" readonly /></td>
+
+                                        <td>Total: </td>
+                                        <td><input class="easyui-numberbox" id="producto_total_consulta" data-options="precision:2, min:0" value="{{ productos.0.precio }}" readonly /></td>
+
+                                        <td><a class="easyui-linkbutton" onclick="agregarProductoConsulta();" iconCls="icon-add" plain="true">Agregar</a></td>
+                                        <td><a class="easyui-linkbutton" onclick="quitarProductoConsulta();" iconCls="icon-remove" plain="true">Quitar</a></td>                                    </tr>
+                                </table>
+                            </div>
+                        {% endif %}
+                        <table class="easyui-datagrid" title="" style="width:100%; height:200px" id="productos_consulta" data-options="singleSelect:true">
+                            <thead>
+                                <tr>
+                                    <th data-options="field:'producto_id',width:100,align:'center'">Código</th>
+                                    <th data-options="field:'producto_nombre',width:350,align:'left'">Producto</th>
+                                    <th data-options="field:'producto_precio',width:200,align:'right'">Precio</th>
+                                    <th data-options="field:'producto_cantidad',width:200,align:'right'">Cantidad</th>
+                                    <th data-options="field:'producto_total',width:200,align:'right'">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for producto in objeto.productos %}
+                                    <tr>
+                                        <td>{{ producto.producto_id }}</td>
+                                        <td>{{ producto.producto_nombre }}</td>
+                                        <td>{{ producto.producto_precio }}</td>
+                                        <td>{{ producto.producto_cantidad }}</td>
+                                        <td>{{ producto.producto_total }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <td>Total: </td>
+                        <td><input class="easyui-numberbox" id="total_consulta" name="total" data-options="precision:2, min:0" value="{{ objeto.total }}" readonly /></td>
+                    </tr>
+                </table>
+
+            </form>
+            <div style="text-align:left; padding:5px; margin-bottom:5px; display: inline-block; vertical-align: middle; width: 49%">
+                <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-filter"  onclick="historial()">Ver Historial</a>
+            </div>
+            <div style="text-align:right; padding:5px; margin-bottom:5px; display: inline-block; vertical-align: middle; width: 49%">
+                {% if turno != False %}
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-save"  onclick="guardar()">Guardar</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-cancel"  onclick="cancelar()">Cancelar</a>
+                {% else %}
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-print"  onclick="imprimirUno()">Imprimir</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-undo"  onclick="cancelar()">Cerrar</a>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

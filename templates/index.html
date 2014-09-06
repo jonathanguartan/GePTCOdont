@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>Sistema de Pacientes, Turnos y Consultas Odontológicas</title>
+
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/black/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/global.css">
+
+	<script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+
+    <style>
+
+        .degradado {
+            background-image: linear-gradient(top,  rgba(0,82,176,1) 0%, rgba(33,144,255,1) 50%, rgba(0,82,176,1) 100%);
+        }
+
+    </style>
+
+    <script type="application/javascript">
+
+        function myformatterdatetime(date) {
+
+            var fecha = myformatterdate(date);
+            var h = date.getHours();
+            var m = date.getMinutes();
+            var s = date.getSeconds();
+            return fecha + ' ' + (h < 10 ? ('0' + h) : h) + ':' + (m < 10 ? ('0' + m) : m) + ':' + (s < 10 ? ('0' + s) : s);
+        }
+
+        function myparserdatetime(s) {
+            if (!s)
+                return new Date();
+
+            var dt = s.split(' ');
+
+            var date = myparserdate(dt[0]);
+            var time = dt[1];
+
+
+            var y = date.getFullYear();
+            var M = date.getMonth();
+            var d = date.getDate();
+
+            var time = (time.split(':'));
+            var h = parseInt(time[0], 10);
+            var m = parseInt(time[1], 10);
+            var s = parseInt(time[2], 10);
+
+            if (!isNaN(y) && !isNaN(M) && !isNaN(d) && !isNaN(h) && !isNaN(M) && !isNaN(s)) {
+                return new Date(y, M, d, h, m, s);
+            } else {
+                return new Date();
+            }
+        }
+
+        function myformatterdate(date) {
+            var y = date.getFullYear();
+            var M = date.getMonth() + 1;
+            var d = date.getDate();
+            return y + '-' + (M < 10 ? ('0' + M) : M) + '-' + (d < 10 ? ('0' + d) : d);;
+        }
+
+        function myparserdate(s) {
+            if (!s)
+                return new Date();
+
+            var dt = s.split(' ');
+
+            var date = dt[0];
+            var time = dt[1];
+
+
+            var date = (date.split('-'));
+            var y = parseInt(date[0], 10);
+            var M = parseInt(date[1], 10);
+            var d = parseInt(date[2], 10);
+
+
+            if (!isNaN(y) && !isNaN(M) && !isNaN(d)) {
+                return new Date(y, M - 1, d);
+            } else {
+                return new Date();
+            }
+        }
+
+    </script>
+
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'north',border:false" style="padding:0px 10px; ">
+        <div style="padding:5px;">
+
+            <a href="#" class="easyui-menubutton" data-options="menu: '#menuPacientes'">Pacientes</a>
+            <div id="menuPacientes" style="width:150px;">
+                <div onclick="$('#contenido').panel('refresh', '/pacientes/');">
+                    {% if usuario.login != 'Administrador' %}
+                        <span>Historias</span>
+                    {% else %}
+                        <span>Gestionar</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <a href="#" class="easyui-menubutton" data-options="menu: '#menuMedicos'">Médicos</a>
+            <div id="menuMedicos" style="width:150px;">
+                {% if usuario.login == 'Administrador' %}
+                    <div onclick="$('#contenido').panel('refresh', '/medicos/');">
+                        <span>Gestionar</span>
+                    </div>
+
+                {% endif %}
+            </div>
+
+            <a href="#" class="easyui-menubutton" data-options="menu: '#menuTurnos'">Turnos</a>
+            <div id="menuTurnos" style="width:150px;">
+                <div  onclick="$('#contenido').panel('refresh', '/turnos/');">
+                    <span>Gestionar</span>
+                </div>
+            </div>
+
+            <a href="#" class="easyui-menubutton" data-options="menu: '#menuConsultas'">Consultas</a>
+            <div id="menuConsultas" style="width:150px;">
+                <div  onclick="$('#contenido').panel('refresh', '/consultas/');">
+                    <span>Gestionar</span>
+                </div>
+            </div>
+
+
+            {% if usuario.login == 'Administrador' %}
+
+                <a href="#" class="easyui-menubutton" data-options="menu: '#menuAdministrar'">Administrar</a>
+                <div id="menuAdministrar" style="width:150px;">
+                    <div onclick="$('#contenido').panel('refresh', '/servicios/');">
+                        <span>Servicios</span>
+                    </div>
+                    <div onclick="$('#contenido').panel('refresh', '/productos/');">
+                        <span>Productos</span>
+                    </div>
+                </div>
+
+            {% endif %}
+
+            <a href="#" class="easyui-menubutton" style="float: right; " data-options="menu: '#menuConfiguracion', iconCls:'cog', iconAlign: 'right', menuAlign:'right'">Bienvenido: {{ usuario.nombres }}</a>
+            <div id="menuConfiguracion" style="width:180px;">
+                <div onclick="
+                            //$('#ventana').window('setWidth', 200);
+                            $('#ventana').panel('refresh', '/password/');
+                            $('#ventana').window('resize', {height: 195})
+                            $('#ventana').window('setTitle', 'Cambiar contraseña');
+                            $('#ventana').window('open');">
+                    <span>Cambiar Contraseña</span>
+                </div>
+                <div onclick="
+                    $('#ventanaMedico').window('refresh', '/medicos/form/{{ usuario.cedula }}/');
+                    $('#ventanaMedico').window('open'); ">
+                    <span>Editar datos</span>
+                </div>
+                <div onclick="window.location = '/logout/'; ">
+                    <span>Cerrar Sesión</span>
+                </div>
+            </div>
+
+        </div>
+	</div>
+	<div data-options="region:'south',border:false" style="height:30px; padding:5px; text-align: right">
+        <code><strong>Sistema de Pacientes,Turnos y Consultas Odontológicas - GEPTCOdont</strong></code>
+    </div>
+	<div id="contenido" data-options="region:'center', title:'Contenido'" style="padding: 20px; /*background-image: url('/static/images/fondo.png'); */  background-image: linear-gradient(rgb(0, 82, 176) 0px, rgb(33, 144, 255) 50%, rgb(0, 82, 176) 100%); ">
+        <div style="position: absolute; margin: auto; display: block;">
+            <img src="/static/images/foto.jpg" style="height: 50%; display: inline-block">
+            <div style="display: inline-block">
+                <p>Un Concepto Nuevo en Odontología</p>
+                <p>Confianza</p>
+                <p>Calidad</p>
+                <p>Atención Integral</p>
+            </div>
+        </div>
+	</div>
+
+
+    <!-- ventana donde se abrira las ventanas -->
+    <div id="ventana" class="easyui-window" title="---" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:470px; height:160px; padding:10px;">
+	</div>
+
+    <div id="ventanaPaciente" class="easyui-window" title="Paciente" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:470px; height:353px; padding:10px;">
+	</div>
+    <div id="ventanaMedico" class="easyui-window" title="Medico" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:470px; height:210px; padding:10px;">
+	</div>
+    <div id="ventanaTurno" class="easyui-window" title="Asignar turno" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:470px; height:205px; padding:10px;">
+	</div>
+    <div id="ventanaConsulta" class="easyui-window" title="Asignar consulta" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:90%; height:500px; padding:10px;">
+	</div>
+    <div id="ventanaConsultaPaciente" class="easyui-window" title="Historial" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:750px; height:500px; padding:10px;">
+	</div>
+</body>
+</html>

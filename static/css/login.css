@@ -1,0 +1,89 @@
+*{
+    overflow-x: hidden;
+}
+
+.container {
+    width: 420px;
+    border: 2px solid rgba(221, 217, 195, 1);
+    border-radius: 10px;
+    padding: 20px 30px;
+    position: relative;
+    margin: auto;
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+
+
+.container h1{
+    color: #244061;
+    font-family: "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
+    font-size: 20px;
+    text-align: center;
+}
+
+
+.container table{
+    width: 100%;
+}
+
+
+.container .image{
+    vertical-align: top;
+}
+
+.container img{
+    margin-top: 5px;
+    height: 65px;
+}
+
+
+.container .input{
+    width: 90%;
+    padding: 5px;
+    border-radius: 2px;
+    border: 0.1em solid rgba(221, 217, 195, 1);;
+}
+
+
+.container .button{
+    text-align: right;
+}
+
+.container input[type=submit]{
+    border-radius: 2px;
+    padding: 5px 20px;
+    cursor: pointer;
+    border: 1px solid rgba(150, 150, 150, 1);
+    background-color: rgba(200, 200, 200, 1);
+}
+
+.container input[type=submit]:hover{
+    border: 0.1em solid rgba(221, 217, 195, 1);
+    border: 1px solid rgba(150, 180, 200, 1);
+    background-color: rgba(150, 180, 200, 1);
+}
+
+
+ .error{
+    color: #CC2222;
+    font-style: italic;
+    text-align: center;
+}
+
+.pie{
+    position: absolute;
+    width: 100%;
+    bottom: 25px;
+    font-style: italic;
+}
+
+hr {
+    text-align: center;
+    width: 80%;
+}
+
+.pie span{
+    text-align: center;
+    width: 100%;
+    display: block;
+}

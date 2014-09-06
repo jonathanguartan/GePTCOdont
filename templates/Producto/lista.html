@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Productos</title>
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/global.css">
+	<script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+</head>
+<body>
+
+    <script>
+        function buscar(value){
+            $('#datagrid').datagrid('load', {
+                query: value
+            });
+        }
+
+        function nuevo(){
+            $('#ventanaProducto').window('refresh', '/productos/form/');
+            $('#ventanaProducto').window('open');
+        }
+
+        function editar(){
+
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            $('#ventanaProducto').window('refresh', '/productos/form/' + fila.id + '/');
+            $('#ventanaProducto').window('open');
+        }
+
+        function eliminar(){
+
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            $.messager.confirm('Eliminar Producto', 'Esta seguro que desea eliminar este producto?', function(r){
+                if (r){
+                    jQuery.ajax({
+                        type: "POST",
+                        url: '/productos/eliminar/',
+                        data: {
+                            id: fila.id
+                        },
+                        success: function(result){
+
+                            var result = eval('(' + result + ')');
+
+                            if (result) {
+                                $('#ventanaProducto').dialog('close');
+                                $('#datagrid').datagrid('reload');
+
+                                $.messager.show({
+                                    title: 'Ok',
+                                    msg: 'Se ha eliminado con exito'
+                                });
+                            }
+                            else {
+                                $.messager.show({
+                                    title: 'Error',
+                                    msg: 'Hubo un error al eliminar'
+                                });
+                            }
+                        },
+                        dataType: 'json'
+                    });
+                }
+            });
+
+        }
+
+        function imprimir(){
+            var value = $('#queryProducto').searchbox('getValue');
+            var uri = encodeURI(value)
+            var win = window.open('/productos/imprimir?query=' + uri);
+        }
+
+    </script>
+
+
+
+	<h2>Productos</h2>
+
+	<div style="margin:10px 0;"></div>
+
+
+    <!-- Tabla donde se muestran los datos-->
+    <div align="center">
+
+        <div id="toolbar" style="padding:5px; height:auto">
+            <div style="margin-bottom:5px; display: inline-block; vertical-align: middle;">
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="nuevo()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editar()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="eliminar()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="imprimir()"></a>
+            </div>
+            <div style="display: inline-block; vertical-align: middle; float: right; margin-right: 5px; ">
+                <input id="queryProducto" class="easyui-searchbox" style="width: 400px;" data-options="prompt:'Por favor ingrese un valor', searcher:buscar"  />
+            </div>
+        </div>
+
+        <table id="datagrid" class="easyui-datagrid" title="Listado de Productos" style="width:700px;  height:400px; "
+            rownumbers="true" fitColumns="true" striped="true" nowrap="false" toolbar="#toolbar"
+               data-options="singleSelect:true, collapsible:false, url:'/productos/leer/', method:'get', pagination:true,
+                    pageSize:10">
+            <thead>
+                <tr>
+                    <th data-options="field:'nombre', width:80" ><strong>Nombre</strong></th>
+                    <th data-options="field:'cantidad', width:20, align: 'right'" ><strong>Cantidad</strong></th>
+                    <th data-options="field:'precio', width:20, align: 'right'" ><strong>Precio</strong></th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+
+
+    <!-- ventanaProducto donde se abrira las ventana -->
+    <div id="ventanaProducto" class="easyui-window" title="Producto" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:470px; height:190px; padding:10px;">
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+{% extends 'Publico/container.html' %}
+
+{% block head %}
+    <script>
+        jQuery(function($) {
+            'use strict';
+            if ($.fn.slider) {
+                $(".art-slidecontainer1").each(function () {
+                    var slideContainer = $(this), tmp;
+                    var inner = $(".art-slider-inner", slideContainer);
+                    var helper = null;
+
+                    if ($.support.transition) {
+                        helper = new BackgroundHelper();
+                        helper.init("horizontal", "next", $(".art-slide-item", inner).first().css($.support.transition.prefix + "transition-duration"));
+                        inner.children().each(function () {
+                            helper.processSlide($(this), true);
+                        });
+
+                        var items = helper.items(helper.current(0), helper.next(0));
+                        helper.setBackground(inner, items);
+                        helper.setPosition(inner, items);
+
+                        slideContainer.on("beforeSlide", function () {
+                            var activeItem = $(".active", this),
+                                nextItem = $(".next, .prev", this),
+                                activePos = $(".art-slide-item", this).index(activeItem),
+                                nextPos = $(".art-slide-item", this).index(nextItem);
+
+                            var currentItems = helper.items(helper.current(activePos), helper.current(nextPos));
+
+                            helper.transition(inner, false);
+                            helper.setBackground(inner, currentItems);
+                            helper.setPosition(inner, currentItems);
+                            if (inner.length) {
+                                tmp = inner.get(0).offsetHeight;
+                            }
+
+                            var movedCurrentItems = helper.items(helper.current(activePos), helper.current(nextPos), true);
+                            helper.transition(inner, true);
+                            helper.setPosition(inner, movedCurrentItems);
+                        });
+                    }
+
+                    inner.children().eq(0).addClass("active");
+                    slideContainer.slider({
+                        pause: 2600,
+                        speed: 600,
+                        repeat: true,
+                        animation: "horizontal",
+                        direction: "next",
+                        navigator: slideContainer.siblings(".art-slidenavigator1"),
+                        helper: helper
+                    });
+                });
+            }
+        });
+    </script>
+    <style>
+        .art-content .art-postcontent-0 .layout-item-0 { padding: 10px;  }
+        .art-content .art-postcontent-0 .layout-item-1 { color: #0E2F43; border-collapse: separate;  }
+        .art-content .art-postcontent-0 .layout-item-2 { border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-width:0px;border-color:#52A6DA; color: #E2E8EE;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px;  }
+        .ie7 .art-post .art-layout-cell {border:none !important; padding:0 !important; }
+        .ie6 .art-post .art-layout-cell {border:none !important; padding:0 !important; }
+
+        .art-slidecontainer1 {
+            position: relative;
+                width: 714px;
+            height: 409px;
+        }
+
+        .art-slidecontainer1 .art-slide-item{
+        }
+
+        .art-slidecontainer1 .art-slide-item {
+            -webkit-transition: 600ms ease-in-out left;
+            -moz-transition: 600ms ease-in-out left;
+            -ms-transition: 600ms ease-in-out left;
+            -o-transition: 600ms ease-in-out left;
+            transition: 600ms ease-in-out left;
+            position: relative;
+            display: none;
+            width:  100%;
+            height: 100%;
+        }
+
+        .art-slidecontainer1 .active, .art-slidecontainer1 .next, .art-slidecontainer1 .prev {
+            display: block;
+        }
+
+        .art-slidecontainer1 .active {
+            left: 0;
+        }
+
+        .art-slidecontainer1 .next, .art-slidecontainer1 .prev {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        .art-slidecontainer1 .next {
+            left: 100%;
+        }
+
+        .art-slidecontainer1 .prev {
+            left: -100%;
+        }
+
+        .art-slidecontainer1 .next.forward, .art-slidecontainer1 .prev.back {
+            left: 0;
+        }
+
+        .art-slidecontainer1 .active.forward {
+            left: -100%;
+        }
+
+        .art-slidecontainer1 .active.back {
+            left: 100%;
+        }
+
+        .art-slide10 {
+            background-image:  url('/static/images/publico/slide10.png');
+            background-size:  100%;
+            background-position:  0 0;
+            background-repeat: no-repeat;
+        }
+        .art-slide11 {
+            background-image:  url('/static/images/publico/slide11.png');
+            background-size:  100%;
+            background-position:  0 0;
+            background-repeat: no-repeat;
+        }
+        .art-slide12 {
+            background-image:  url('/static/images/publico/slide12.png');
+            background-size:  100%;
+            background-position:  0 0;
+            background-repeat: no-repeat;
+        }
+        .art-slide13 {
+            background-image:  url('/static/images/publico/slide13.png');
+            background-size:  100%;
+            background-position:  0 0;
+            background-repeat: no-repeat;
+        }
+        .art-slide14 {
+            background-image:  url('/static/images/publico/slide14.png');
+            background-size:  100%;
+            background-position:  0 0;
+            background-repeat: no-repeat;
+        }
+
+        .art-slidenavigator1 {
+            display: inline-block;
+            position: absolute;
+            direction: ltr !important;
+            top: 385px;
+            left: 0%;
+            z-index: 101;
+            line-height: 0 !important;
+            -webkit-background-origin: border !important;
+            -moz-background-origin: border !important;
+            background-origin: border-box !important;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            text-align: center;
+            white-space: nowrap;
+            right: 0px;
+         }
+
+        .art-slidenavigator1 {
+            background: #7CCDF8;background: linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -webkit-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -moz-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -o-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: -ms-linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;background: linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;-svg-background: linear-gradient(top, rgba(202, 235, 252, 0.6) 0, rgba(47, 175, 244, 0.6) 100%) no-repeat;
+            -webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px; padding:7px;
+        }
+        .art-slidenavigator1 > a    {
+            background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;background: #0C95DF;-svg-background: #0C95DF;
+            -webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%;
+            margin:0 10px 0 0; width: 10px; height: 10px;
+        }
+
+        .art-slidenavigator1 > a.active {
+            background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;background: #77BAFE;-svg-background: #77BAFE;
+            -webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%; margin:0 10px 0 0; width: 10px; height: 10px;
+        }
+
+        .art-slidenavigator1 > a:hover {
+            background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;background: #0275E8;-svg-background: #0275E8;
+            -webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%;
+            margin:0 10px 0 0; width: 10px; height: 10px;
+        }
+
+    </style>
+{% endblock head %}
+
+
+{% block menuInicio %}
+    class="active"
+{% endblock menuInicio %}
+
+
+{% block contenido %}
+    <div style="text-align: center;">
+        <div id="1" style="position: relative; display: inline-block; z-index: 0; margin: 0px;  border-style: solid; border-color: #000000; border-width: 3px;  " class="art-collage">
+            <div class="art-slider art-slidecontainer1" data-width="714" data-height="409">
+                <div class="art-slider-inner">
+                    <div class="art-slide-item art-slide10">
+                    </div>
+                    <div class="art-slide-item art-slide11">
+                    </div>
+                    <div class="art-slide-item art-slide12">
+                    </div>
+                    <div class="art-slide-item art-slide13">
+                    </div>
+                    <div class="art-slide-item art-slide14">
+                    </div>
+                </div>
+            </div>
+            <div class="art-slidenavigator art-slidenavigator1" data-left="0">
+                <a href="#" class="art-slidenavigatoritem"></a>
+                <a href="#" class="art-slidenavigatoritem"></a>
+                <a href="#" class="art-slidenavigatoritem"></a>
+                <a href="#" class="art-slidenavigatoritem"></a>
+                <a href="#" class="art-slidenavigatoritem"></a>
+            </div>
+        </div>
+    </div>
+{% endblock contenido %}

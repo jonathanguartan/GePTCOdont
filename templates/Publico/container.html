@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="es-EC">
+    <head>
+        <meta charset="utf-8">
+        <title>Sistema de Pacientes, Turnos Odontológicas</title>
+        <meta name="viewport" content="initial-scale = 1.0, maximum-scale = 1.0, user-scalable = no, width = device-width">
+
+        <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+        <link rel="stylesheet" href="/static/css/style.css" media="screen">
+        <!--[if lte IE 7]><link rel="stylesheet" href="/static/css/style.ie7.css" media="screen" /><![endif]-->
+        <link rel="stylesheet" href="/static/css/style.responsive.css" media="all">
+
+
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/script.js"></script>
+        <script src="/static/js/script.responsive.js"></script>
+
+        {% block head %}
+        {% endblock head %}
+
+    </head>
+    <body>
+        <div id="art-main">
+            <header class="art-header">
+                <h1 class="art-headline" data-left="37.91%">
+                    <a href="#">CONSULTORIO ODONTOLÓGICO</a>
+                </h1>
+                <h2 class="art-slogan" data-left="27.29%">Dr. Luis A. Peñaherrera</h2>
+                <div id="art-flash-area">
+                    <div id="art-flash-container">
+                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="900" height="250" id="art-flash-object">
+                        <param name="movie" value="/static/images/publico/container.swf">
+                        <param name="quality" value="high">
+                        <param name="scale" value="default">
+                        <param name="wmode" value="transparent">
+                        <param name="flashvars" value="color1=0xFFFFFF&amp;alpha1=.50&amp;framerate1=24&amp;loop=true&amp;wmode=transparent&amp;clip=/static/images/publico/flash.swf&amp;radius=5&amp;clipx=-50&amp;clipy=0&amp;initalclipw=900&amp;initalcliph=225&amp;clipw=1000&amp;cliph=250&amp;width=900&amp;height=250&amp;textblock_width=0&amp;textblock_align=no&amp;hasTopCorners=true&amp;hasBottomCorners=false">
+                        <param name="swfliveconnect" value="true">
+                        <!--[if !IE]>-->
+                        <object type="application/x-shockwave-flash" data="/static/images/publico/container.swf" width="900" height="250">
+                            <param name="quality" value="high">
+                            <param name="scale" value="default">
+                            <param name="wmode" value="transparent">
+                            <param name="flashvars" value="color1=0xFFFFFF&amp;alpha1=.50&amp;framerate1=24&amp;loop=true&amp;wmode=transparent&amp;clip=/static/images/publico/flash.swf&amp;radius=5&amp;clipx=-50&amp;clipy=0&amp;initalclipw=900&amp;initalcliph=225&amp;clipw=1000&amp;cliph=250&amp;width=900&amp;height=250&amp;textblock_width=0&amp;textblock_align=no&amp;hasTopCorners=true&amp;hasBottomCorners=false">
+                            <param name="swfliveconnect" value="true">
+                        <!--<![endif]-->
+                            <div class="art-flash-alt"><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player"></a></div>
+                        <!--[if !IE]>-->
+                        </object>
+                        <!--<![endif]-->
+                    </object>
+                    </div>
+                </div>
+                <div class="art-shapes">
+                    <div class="art-textblock art-object929516191" data-left="1.23%" >
+                        <div class="art-object929516191-text-container">
+                            <div class="art-object929516191-text"><p><a href="/login/" class="link">Ingreso al Sistema</a></p></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <nav class="art-nav">
+                <ul class="art-hmenu">
+                    <li><a href="/" {% block menuInicio %} {% endblock menuInicio %}>Inicio</a></li>
+                    <li><a href="/public/servicios/" {% block menuServicios %} {% endblock menuServicios %}>Servicios</a></li>
+                    <li><a href="/public/quienessomos/" {% block menuQuienesSomos %} {% endblock menuQuienesSomos %}>Quiénes Somos</a></li>
+                    <li><a href="/public/contactenos/" {% block menuContactenos %} {% endblock menuContactenos %}>Contáctenos</a></li>
+                </ul>
+            </nav>
+            <div class="art-sheet clearfix">
+                <div class="art-layout-wrapper">
+                    <div class="art-content-layout">
+                        <div class="art-content-layout-row">
+                            <div class="art-layout-cell art-content">
+                                <article class="art-post art-article">
+                                    <div class="art-postcontent art-postcontent-0 clearfix">
+                                        <div class="art-content-layout">
+                                            <div class="art-content-layout-row">
+                                                <div class="art-layout-cell layout-item-0" style="width: 100%" >
+                                                    {% block contenido %}
+                                                    {% endblock contenido %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="art-content-layout layout-item-1">
+                                            <div class="art-content-layout-row">
+                                                <div class="art-layout-cell layout-item-2" style="width: 100%" >
+                                                    <table class="art-article"><tbody><tr><td style="width: 100%; "><blockquote><span style="color: rgb(1, 54, 106); font-style: normal; ">Brindamos servicios de alta calidad, con materiales de última generación y técnicas y procedimientos actuales y de avanzada, seguimos estrictos protocolos de bioseguridad y esterilización para garantizarte una atención completamente segura y efectiva, tenemos especial esmero en brindarte una atención agradable para lo cual contamos con cómodos espacios, y equipo modernos.</span></blockquote><br></td></tr></tbody></table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="art-footer">
+                    <div class="art-content-layout">
+                        <div class="art-content-layout-row">
+                            <div class="art-layout-cell layout-item-0" style="width: 100%">
+                                <p>Derechos Reservados&nbsp;</p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <p class="art-page-footer">
+                <span id="art-footnote-links"><a href="http://www.artisteer.com/" target="_blank">Página Web</a> creada por Jenniffer Macas.</span>
+            </p>
+        </div>
+    </body>
+</html>

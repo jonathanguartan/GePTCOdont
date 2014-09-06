@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Paciente</title>
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/global.css">
+        <script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            function guardar(){
+
+                $('#formularioPaciente').form('submit', {
+                    url: "/pacientes/guardar/",
+                    onSubmit: function() {
+                        return $(this).form('validate');
+                    },
+                    success: function(result) {
+
+                        var result = eval('(' + result + ')');
+
+                        if (result == true) {
+                            $('#ventanaPaciente').dialog('close');
+                            $('#datagrid').datagrid('reload');
+
+                            $.messager.show({
+                                title: 'Ok',
+                                msg: 'Se ha guardado con exito'
+                            });
+                        }
+                        else {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: result
+                            });
+                        }
+                    }
+                });
+            }
+
+            function cancelar(){
+                $('#ventanaPaciente').dialog('close');
+            }
+
+        </script>
+        <div>
+            <form id="formularioPaciente" method="post" novalidate="novalidate">
+                <input type="hidden" name="editar" value="{{ editar }}">
+                <table>
+                    <tr>
+                        <td>Nro. Historia: </td>
+                        <td><input class="easyui-validatebox" type="text" name="nro_historia" data-options="required:true" value="{{ objeto.nro_historia }}" maxlength="15" size="60" {% if objeto.nro_historia != None or usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Cédula: </td>
+                        <td><input class="easyui-validatebox" type="text" name="cedula" data-options="required:true" value="{{ objeto.cedula }}" maxlength="10" size="60" {% if objeto.cedula != None or usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Nombres: </td>
+                        <td><input class="easyui-validatebox" type="text" name="nombres" data-options="required:true" value="{{ objeto.nombres }}" maxlength="80" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Apellidos: </td>
+                        <td><input class="easyui-validatebox" type="text" name="apellidos" data-options="required:true" value="{{ objeto.apellidos }}" maxlength="80" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Sexo: </td>
+                        <td>
+                            <select class="easyui-combobox" name="sexo" data-options="required:true, editable:false" value="{{ objeto.sexo }}" {% if usuario.login != 'Administrador' %} readonly {% endif %} >
+                                <option value="MASCULINO">MASCULINO</option>
+                                <option value="FEMENINO">FEMENINO</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ciudad: </td>
+                        <td><input class="easyui-validatebox" type="text" name="ciudad" data-options="required:true" value="{{ objeto.ciudad }}" maxlength="50" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Dirección: </td>
+                        <td><input class="easyui-validatebox" type="text" name="direccion" data-options="required:true" value="{{ objeto.direccion }}" maxlength="120" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono: </td>
+                        <td><input class="easyui-validatebox" type="text" name="telefono" data-options="required:true" value="{{ objeto.telefono }}" maxlength="10" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Email: </td>
+                        <td><input class="easyui-validatebox" type="text" name="email" data-options="required:true, validType:'email'" value="{{ objeto.email }}" maxlength="75" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                    </tr>
+                </table>
+            </form>
+            <div style="text-align:right; padding:5px">
+                {% if usuario.login == 'Administrador' %}
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-save"  onclick="guardar()">Guardar</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-cancel"  onclick="cancelar()">Cancelar</a>
+                {% else %}
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-undo"  onclick="cancelar()">Cerrar</a>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Turno</title>
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/global.css">
+        <script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            function guardar(){
+
+                $('#formularioTurno').form('submit', {
+                    url: "/turnos/guardar/",
+                    onSubmit: function() {
+                        return $(this).form('validate');
+                    },
+                    success: function(result) {
+
+                        var result = eval('(' + result + ')');
+
+                        if (result) {
+                            $('#ventanaTurno').dialog('close');
+                            $('#datagrid').datagrid('reload');
+
+                            $.messager.show({
+                                title: 'Ok',
+                                msg: 'Se ha guardado con exito'
+                            });
+                        }
+                        else {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: 'Hubo un error al guardar'
+                            });
+                        }
+                    }
+                });
+            }
+
+            function cancelar(){
+                $('#ventanaTurno').dialog('close');
+            }
+
+            function validarFecha(actual, anterior){
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: '/turnos/comprobarfecha/',
+                    data: {
+                        fecha_hora: actual,
+                        nro_turno: $('#nro_turno_formulario').val()
+                    },
+                    success: function(result){
+
+                        var result = eval('(' + result + ')');
+                        if (!result) {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: 'Fecha no válida. Se va a proponer una fecha'
+                            });
+                            proponerFecha();
+                        }
+                    },
+                    dataType: 'json'
+                });
+            }
+
+            function proponerFecha(){
+                 jQuery.ajax({
+                    type: "GET",
+                    url: '/turnos/proponerfecha/',
+                    success: function(result){
+                        $('#fecha_hora_formulario').datetimebox('setValue', result);
+                    },
+                    dataType: 'json'
+                });
+            }
+
+        </script>
+        <div>
+            <form id="formularioTurno" method="post" novalidate="novalidate">
+                <table>
+                    <tr>
+                        <td>Nro: </td>
+                        <td><input class="easyui-validatebox" type="text" id="nro_turno_formulario" name="nro_turno" data-options="" value="{{ objeto.nro_turno }}" maxlength="60" size="60" readonly /></td>
+                    </tr>
+                    <tr>
+                        <td>Fecha y hora: </td>
+                        <td>
+                            <input class="easyui-datetimebox" data-options="required:true,formatter:myformatterdatetime,parser:myparserdatetime,onChange:validarFecha" id="fecha_hora_formulario" name="fecha_hora" value="{{ objeto.fecha_hora }}" style="width: 200px" />
+                            <a class="easyui-linkbutton" onclick="proponerFecha()">Proponer Fecha</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Paciente: </td>
+                        <td>
+                            <select class="easyui-combobox" data-options="required:true,editable:false" name="paciente" >
+                                {% for pac in pacientes %}
+                                    {% if pac.nro_historia == objeto.paciente %}
+                                        <option value="{{ pac.nro_historia }}" selected="selected">{{ pac.apellidos }} {{ pac.nombres }}</option>
+                                    {% else %}
+                                        <option value="{{ pac.nro_historia }}">{{ pac.apellidos }} {{ pac.nombres }}</option>
+                                    {%  endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Medico: </td>
+                        <td>
+                            <select class="easyui-combobox" data-options="required:true,editable:false" name="medico" value="{{ objeto.medico }}" {% if usuario.login != 'Administrador' %} readonly {% endif %} >
+                                {% for med in medicos %}
+                                    {% if med.cedula == objeto.medico or med.cedula == usuario.cedula and usuario.login != 'Administrador' %}
+                                        <option value="{{ med.cedula }}" selected="selected">{{ med.apellidos }} {{ med.nombres }}</option>
+                                    {% else %}
+                                        <option value="{{ med.cedula }}">{{ med.apellidos }} {{ med.nombres }}</option>
+                                    {%  endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div style="text-align:right; padding:5px">
+                <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-save"  onclick="guardar()">Guardar</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-cancel"  onclick="cancelar()">Cancelar</a>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inicio de Sesión</title>
+    <link href="/static/css/login.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div>
+            <h1>Ingreso al Panel Administrativo</h1>
+        </div>
+        <div>
+            <form method="POST" action=".">
+                <table>
+                    <tr>
+                        <td class="image" rowspan="3"><img src="/static/images/users.png"/></td>
+                        <td>Login: </td><td><input class="input" type="text" name="login" placeholder="Usuario del Médico"/></td>
+                    </tr>
+                    <tr>
+                        <td>Passoword: </td><td><input class="input" type="password" name="password" placeholder="Contraseña del Médico"/></td>
+                    </tr>
+                    <tr class="button">
+                        <td colspan="2"><input type="submit" value="Ingresar"/></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+    {% if error != None %}
+    <div class="error">
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+    <div class="pie">
+        <hr />
+        <span>Derechos Reservados</span>
+    </div>
+</body>
+</html>

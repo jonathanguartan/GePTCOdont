@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Medico</title>
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+        <link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/global.css">
+        <script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            function guardar(){
+
+                $('#formularioMedico').form('submit', {
+                    url: "/medicos/guardar/",
+                    onSubmit: function() {
+                        return $(this).form('validate');
+                    },
+                    success: function(result) {
+
+                        var result = eval('(' + result + ')');
+
+                        if (result) {
+                            $('#ventanaMedico').dialog('close');
+                            $('#datagrid').datagrid('reload');
+
+                            $.messager.show({
+                                title: 'Ok',
+                                msg: 'Se ha guardado con exito'
+                            });
+                        }
+                        else {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: 'Hubo un error al guardar'
+                            });
+                        }
+                    }
+                });
+            }
+
+            function cancelar(){
+                $('#ventanaMedico').dialog('close');
+            }
+
+        </script>
+        <div>
+            <form id="formularioMedico" method="post" novalidate="novalidate">
+                <table>
+                    <tr>
+                        <td>Cedula: </td>
+                        <td><input class="easyui-validatebox" type="text" name="cedula" data-options="required:true" value="{{ objeto.cedula }}" maxlength="10" size="60" {% if objeto.cedula != None %} readonly {% endif %} /></td>
+                    </tr>
+                    <tr>
+                        <td>Nombres: </td>
+                        <td><input class="easyui-validatebox" type="text" name="nombres" data-options="required:true" value="{{ objeto.nombres }}" maxlength="80" size="60" /></td>
+                    </tr>
+                    <tr>
+                        <td>Apellidos: </td>
+                        <td><input class="easyui-validatebox" type="text" name="apellidos" data-options="required:true" value="{{ objeto.apellidos }}" maxlength="80" size="60" /></td>
+                    </tr>
+                    <tr>
+                        <td>Login: </td>
+                        <td><input class="easyui-validatebox" type="text" name="login" data-options="required:true" value="{{ objeto.login }}" maxlength="20" size="60" /></td>
+                    </tr>
+                </table>
+            </form>
+            <div style="text-align:right; padding:5px">
+                <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-save"  onclick="guardar()">Guardar</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-cancel"  onclick="cancelar()">Cancelar</a>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Pacientes</title>
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/global.css">
+	<script type="text/javascript" src="/static/js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/js/easyui/locale/easyui-lang-es.js"></script>
+</head>
+<body>
+    <script type="text/javascript" >
+        function buscar(value){
+            $('#datagrid').datagrid('load', {
+                query: value
+            });
+        }
+
+        function nuevo(){
+            $('#ventanaPaciente').window('refresh', '/pacientes/form/');
+            $('#ventanaPaciente').window('open');
+        }
+
+        function editar(){
+
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            $('#ventanaPaciente').window('refresh', '/pacientes/form/' + fila.nro_historia + '/');
+            $('#ventanaPaciente').window('open');
+        }
+
+        function eliminar(){
+
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            $.messager.confirm('Eliminar Paciente', 'Esta seguro que desea eliminar este paciente?', function(r){
+                if (r){
+                    jQuery.ajax({
+                        type: "POST",
+                        url: '/pacientes/eliminar/',
+                        data: {
+                            nro_historia: fila.nro_historia
+                        },
+                        success: function(result){
+
+                            var result = eval('(' + result + ')');
+
+                            if (result) {
+                                $('#ventanaPaciente').dialog('close');
+                                $('#datagrid').datagrid('reload');
+
+                                $.messager.show({
+                                    title: 'Ok',
+                                    msg: 'Se ha eliminado con exito'
+                                });
+                            }
+                            else {
+                                $.messager.show({
+                                    title: 'Error',
+                                    msg: 'Hubo un error al eliminar'
+                                });
+                            }
+                        },
+                        dataType: 'json'
+                    });
+                }
+            });
+        }
+
+        function imprimir(){
+            var value = $('#queryPaciente').searchbox('getValue');
+            var uri = encodeURI(value)
+            var win = window.open('/pacientes/imprimir?query=' + uri);
+        }
+
+
+        function historial(){
+            var fila = $('#datagrid').datagrid('getSelected');
+            if(fila == null) return;
+
+            $('#ventanaConsultaPaciente').window('refresh', '/consultas/paciente/' + fila.nro_historia + '/');
+            $('#ventanaConsultaPaciente').window('open');
+        }
+
+    </script>
+
+
+	<h2>Pacientes</h2>
+
+	<div style="margin:10px 0;"></div>
+
+
+    <!-- Tabla donde se muestran los datos-->
+    <div align="center">
+
+        <div id="toolbar" style="padding:5px; height:auto">
+            <div style="margin-bottom:5px; display: inline-block; vertical-align: middle; ">
+                {% if usuario.login == 'Administrador' %}
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="nuevo()"></a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editar()"></a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="eliminar()"></a>
+                {% else %}
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="view" plain="true" onclick="editar()"></a>
+                {% endif %}
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="imprimir()"></a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-filter" plain="true" onclick="historial()">Ver Historial de Consultas</a>
+            </div>
+            <div style="display: inline-block; vertical-align: middle; float: right; margin-right: 5px;">
+                <input id="queryPaciente" class="easyui-searchbox" style="width: 400px;" data-options="prompt:'Por favor ingrese un valor', searcher:buscar"  />
+            </div>
+        </div>
+
+        <table id="datagrid" class="easyui-datagrid" title="Listado de Pacientes" style="width:800px;  height:400px; "
+            rownumbers="true" fitColumns="true" striped="true" nowrap="false" toolbar="#toolbar"
+               data-options="singleSelect:true, collapsible:false, url:'/pacientes/leer/', method:'get', pagination:true,
+                    pageSize:10">
+            <thead>
+                <tr>
+                    <th data-options="field:'nro_historia', width:20" ><strong>Nro. Historia</strong></th>
+                    <th data-options="field:'cedula', width:12" ><strong>Cedula</strong></th>
+                    <th data-options="field:'nombres', width:35" ><strong>Nombres</strong></th>
+                    <th data-options="field:'apellidos', width:35" ><strong>Apellidos</strong></th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+
+</body>
+</html>
