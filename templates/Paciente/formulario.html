@@ -54,19 +54,19 @@
                 <table>
                     <tr>
                         <td>Nro. Historia: </td>
-                        <td><input class="easyui-validatebox" type="text" name="nro_historia" data-options="required:true" value="{{ objeto.nro_historia }}" maxlength="15" size="60" {% if objeto.nro_historia != None or usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                        <td><input class="easyui-validatebox" type="text" name="nro_historia" data-options="required:true, validType:'length[15,15]'" value="{{ objeto.nro_historia }}" maxlength="15" size="60" {% if objeto.nro_historia != None or usuario.login != 'Administrador' %} readonly {% endif %} /></td>
                     </tr>
                     <tr>
                         <td>Cédula: </td>
-                        <td><input class="easyui-validatebox" type="text" name="cedula" data-options="required:true" value="{{ objeto.cedula }}" maxlength="10" size="60" {% if objeto.cedula != None or usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                        <td><input class="easyui-validatebox" type="text" name="cedula" data-options="required:true, validType:['numeric', 'length[10,10]']" value="{{ objeto.cedula }}" maxlength="10" size="60" {% if objeto.cedula != None or usuario.login != 'Administrador' %} readonly {% endif %} /></td>
                     </tr>
                     <tr>
                         <td>Nombres: </td>
-                        <td><input class="easyui-validatebox" type="text" name="nombres" data-options="required:true" value="{{ objeto.nombres }}" maxlength="80" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                        <td><input class="easyui-validatebox" type="text" name="nombres" data-options="required:true, validType:'alphabetic'" value="{{ objeto.nombres }}" maxlength="80" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
                     </tr>
                     <tr>
                         <td>Apellidos: </td>
-                        <td><input class="easyui-validatebox" type="text" name="apellidos" data-options="required:true" value="{{ objeto.apellidos }}" maxlength="80" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                        <td><input class="easyui-validatebox" type="text" name="apellidos" data-options="required:true, validType:'alphabetic'" value="{{ objeto.apellidos }}" maxlength="80" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
                     </tr>
                     <tr>
                         <td>Sexo: </td>
@@ -79,7 +79,7 @@
                     </tr>
                     <tr>
                         <td>Ciudad: </td>
-                        <td><input class="easyui-validatebox" type="text" name="ciudad" data-options="required:true" value="{{ objeto.ciudad }}" maxlength="50" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                        <td><input class="easyui-validatebox" type="text" name="ciudad" data-options="required:true, validType:'alphabetic'" value="{{ objeto.ciudad }}" maxlength="50" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
                     </tr>
                     <tr>
                         <td>Dirección: </td>
@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
                         <td>Teléfono: </td>
-                        <td><input class="easyui-validatebox" type="text" name="telefono" data-options="required:true" value="{{ objeto.telefono }}" maxlength="10" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
+                        <td><input class="easyui-validatebox" type="text" name="telefono" data-options="required:true, validType:['numeric', 'length[10,10]']" value="{{ objeto.telefono }}" maxlength="10" size="60" {% if usuario.login != 'Administrador' %} readonly {% endif %} /></td>
                     </tr>
                     <tr>
                         <td>Email: </td>

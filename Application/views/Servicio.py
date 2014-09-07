@@ -25,18 +25,32 @@ def form(request, pk=None):
 
 def guardar(request):
     try:
-        servicio = Servicio()
 
         if not request.POST.get("id") == '':
-            servicio.id = request.POST.get('id', None)
+            lista = Servicio.objects.filter(id=request.POST.get('id'))
+            servicio = lista[0]
+
+            if request.POST.get('nombre') == servicio.nombre:
+                pass
+            else:
+                if len( Servicio.objects.filter(nombre=request.POST.get('nombre'))  ) > 0:
+                     return HttpResponse(json.dumps('Servicio ya se encuentra registrado'), mimetype="text/plain")
+
+        else:
+            servicio = Servicio()
+
+            if len( Servicio.objects.filter(nombre=request.POST.get('nombre'))  ) > 0:
+                 return HttpResponse(json.dumps('Servicio ya se encuentra registrado'), mimetype="text/plain")
 
         servicio.nombre = request.POST.get('nombre')
         servicio.precio = float(request.POST.get('precio'))
         servicio.save()
 
         return HttpResponse('true', mimetype="text/plain")
+
     except:
-        return HttpResponse('false', mimetype="text/plain")
+        return HttpResponse(json.dumps('Hubo un error al guardar'), mimetype="text/plain")
+
 
 def eliminar(request):
     try:

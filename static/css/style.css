@@ -3,6 +3,8 @@
 #art-main
 {
    background: #63AFDE url('/static/images/publico/page.png') top center scroll;
+   background-repeat: no-repeat;
+   background-size: 100% 100%;
    margin:0 auto;
    font-size: 13px;
    font-family: Arial, 'Arial Unicode MS', Helvetica, Sans-Serif;
@@ -575,8 +577,10 @@ text-shadow: 0px -1px 0px rgba(23, 23, 23, 0.5);
    border:1px solid #49A3FD;
    margin:0 auto;
    height: 250px;
+   background-color: rgb(133, 193, 252);
    background-image: url('/static/images/publico/object929516191.png'),url('/static/images/publico/object1244234078.png'),url('/static/images/publico/object789014550.png'), url('/static/images/publico/header.png');
    background-position: 9px 8px,558px -5px,-3px 22px, 0 0;
+   background-size: auto, auto, auto, auto 250px;
    background-repeat: no-repeat;
    position: relative;
    width: 900px;

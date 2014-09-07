@@ -93,19 +93,19 @@
                     <tr>
                         <td>Fecha y hora: </td>
                         <td>
-                            <input class="easyui-datetimebox" data-options="required:true,formatter:myformatterdatetime,parser:myparserdatetime,onChange:validarFecha" id="fecha_hora_formulario" name="fecha_hora" value="{{ objeto.fecha_hora }}" style="width: 200px" />
+                            <input class="easyui-datetimebox" data-options="required:true,formatter:myformatterdatetime,parser:myparserdatetime,onChange:validarFecha,editable:false" id="fecha_hora_formulario" name="fecha_hora" style="width: 250px" value="{{ objeto.fecha_hora }}" style="width: 200px" />
                             <a class="easyui-linkbutton" onclick="proponerFecha()">Proponer Fecha</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Paciente: </td>
                         <td>
-                            <select class="easyui-combobox" data-options="required:true,editable:false" name="paciente" >
+                            <select class="easyui-combobox" data-options="required:true" name="paciente" style="width: 400px" >
                                 {% for pac in pacientes %}
                                     {% if pac.nro_historia == objeto.paciente %}
-                                        <option value="{{ pac.nro_historia }}" selected="selected">{{ pac.apellidos }} {{ pac.nombres }}</option>
+                                        <option value="{{ pac.nro_historia }}" selected="selected">{{ pac.nro_historia }} - {{ pac.apellidos }} {{ pac.nombres }}</option>
                                     {% else %}
-                                        <option value="{{ pac.nro_historia }}">{{ pac.apellidos }} {{ pac.nombres }}</option>
+                                        <option value="{{ pac.nro_historia }}">{{ pac.nro_historia }} - {{ pac.apellidos }} {{ pac.nombres }}</option>
                                     {%  endif %}
                                 {% endfor %}
                             </select>
@@ -114,7 +114,7 @@
                     <tr>
                         <td>Medico: </td>
                         <td>
-                            <select class="easyui-combobox" data-options="required:true,editable:false" name="medico" value="{{ objeto.medico }}" {% if usuario.login != 'Administrador' %} readonly {% endif %} >
+                            <select class="easyui-combobox" data-options="required:true,editable:false" name="medico" style="width: 400px"  {% if usuario.login != 'Administrador' %} readonly {% endif %} >
                                 {% for med in medicos %}
                                     {% if med.cedula == objeto.medico or med.cedula == usuario.cedula and usuario.login != 'Administrador' %}
                                         <option value="{{ med.cedula }}" selected="selected">{{ med.apellidos }} {{ med.nombres }}</option>

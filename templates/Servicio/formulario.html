@@ -24,7 +24,7 @@
 
                         var result = eval('(' + result + ')');
 
-                        if (result) {
+                        if (result == true) {
                             $('#ventanaServicio').dialog('close');
                             $('#datagrid').datagrid('reload');
 
@@ -36,7 +36,7 @@
                         else {
                             $.messager.show({
                                 title: 'Error',
-                                msg: 'Hubo un error al guardar'
+                                msg: result
                             });
                         }
                     }

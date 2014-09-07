@@ -52,7 +52,7 @@ ul.art-hmenu>li>span.art-hmenu-separator
    left:  -11px;
    width: 11px;
    height: 52px;
-   background: url('../documents/images/menuseparator.png') center center no-repeat;
+   background: url('/static/images/publico/menuseparator.png') center center no-repeat;
 }
 ul.art-hmenu>li:first-child>span.art-hmenu-separator
 {

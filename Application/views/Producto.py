@@ -25,11 +25,25 @@ def form(request, pk=None):
 
 
 def guardar(request):
+
     try:
-        producto = Producto()
 
         if not request.POST.get("id") == '':
-            producto.id = request.POST.get('id', None)
+            lista = Producto.objects.filter(id=request.POST.get('id'))
+            producto = lista[0]
+
+            if request.POST.get('nombre') == producto.nombre:
+                pass
+            else:
+                if len( Producto.objects.filter(nombre=request.POST.get('nombre'))  ) > 0:
+                     return HttpResponse(json.dumps('Producto ya se encuentra registrado'), mimetype="text/plain")
+
+        else:
+            producto = Producto()
+
+            if len( Producto.objects.filter(nombre=request.POST.get('nombre'))  ) > 0:
+                 return HttpResponse(json.dumps('Producto ya se encuentra registrado'), mimetype="text/plain")
+
 
         producto.nombre = request.POST.get('nombre')
         producto.cantidad = request.POST.get('cantidad')
@@ -37,8 +51,9 @@ def guardar(request):
         producto.save()
 
         return HttpResponse('true', mimetype="text/plain")
+
     except:
-        return HttpResponse('false', mimetype="text/plain")
+        return HttpResponse(json.dumps('Hubo un error al guardar'), mimetype="text/plain")
 
 
 def eliminar(request):

@@ -17,21 +17,41 @@ def index(request):
 def form(request, pk=None):
 
     objeto = {}
+    editar = False
     if pk is not None:
         objeto = Medico.objects.get(pk=pk);
+        editar = True
 
-    return render_to_response('Medico/formulario.html', {'objeto': objeto})
+    return render_to_response('Medico/formulario.html', {'objeto': objeto, 'editar': editar, })
 
 
 def guardar(request):
     try:
+
+        if request.POST.get('editar', 'False') == 'True':
+            pass
+
+        elif len( Medico.objects.filter(cedula=request.POST.get('cedula')) ) > 0:
+             return HttpResponse(json.dumps('Cédula ya se encuentra registrada'), mimetype="text/plain")
+
+
         lista = Medico.objects.filter(cedula=request.POST.get('cedula'))
 
         if len(lista) > 0:
             medico = lista[0]
 
+            if request.POST.get('login') == medico.login:
+                pass
+            else:
+                if len( Medico.objects.filter(login=request.POST.get('login')) ) > 0:
+                     return HttpResponse(json.dumps('Login ya se encuentra registrado'), mimetype="text/plain")
+
         else:
             medico = Medico()
+
+            if len( Medico.objects.filter(Q(login=request.POST.get('login')))  ) > 0:
+                return HttpResponse(json.dumps('Login ya se encuentra registrado'), mimetype="text/plain")
+
             medico.cedula = request.POST.get('cedula')
             medico.password = medico.cedula
 
@@ -44,7 +64,7 @@ def guardar(request):
 
         return HttpResponse('true', mimetype="text/plain")
     except:
-        return HttpResponse('false', mimetype="text/plain")
+        return HttpResponse('Hubo un error al guardar', mimetype="text/plain")
 
 
 def eliminar(request):

@@ -15,7 +15,7 @@
     <style>
 
         .degradado {
-            background-image: linear-gradient(top,  rgba(0,82,176,1) 0%, rgba(33,144,255,1) 50%, rgba(0,82,176,1) 100%);
+            background-image: linear-gradient(rgb(0, 50, 107) 0px, rgb(135, 194, 252) 10%, rgb(133, 193, 252) 90%, rgb(0, 50, 107) 100%);
         }
 
     </style>
@@ -87,6 +87,27 @@
             }
         }
 
+
+        $.extend($.fn.validatebox.defaults.rules, {
+			numeric: {
+				validator: function(value){
+                    return parseInt(value) == value;
+				},
+				message: 'No es una secuencia de números válidos'
+			},
+            alphabetic: {
+				validator: function(value){
+                    for(var v in value){
+                        if(parseInt(value[v]) == value[v]){
+                            return false;
+                        }
+                    }
+                    return true;
+				},
+				message: 'Contiene caracteres numéricos'
+			}
+		})
+
     </script>
 
 </head>
@@ -105,15 +126,15 @@
                 </div>
             </div>
 
-            <a href="#" class="easyui-menubutton" data-options="menu: '#menuMedicos'">Médicos</a>
-            <div id="menuMedicos" style="width:150px;">
-                {% if usuario.login == 'Administrador' %}
-                    <div onclick="$('#contenido').panel('refresh', '/medicos/');">
-                        <span>Gestionar</span>
-                    </div>
+            {% if usuario.login == 'Administrador' %}
+                <a href="#" class="easyui-menubutton" data-options="menu: '#menuMedicos'">Médicos</a>
+                <div id="menuMedicos" style="width:150px;">
+                        <div onclick="$('#contenido').panel('refresh', '/medicos/');">
+                            <span>Gestionar</span>
+                        </div>
 
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
 
             <a href="#" class="easyui-menubutton" data-options="menu: '#menuTurnos'">Turnos</a>
             <div id="menuTurnos" style="width:150px;">
@@ -167,17 +188,10 @@
         </div>
 	</div>
 	<div data-options="region:'south',border:false" style="height:30px; padding:5px; text-align: right">
-        <code><strong>Sistema de Pacientes,Turnos y Consultas Odontológicas - GEPTCOdont</strong></code>
+        <code><strong>Sistema de Pacientes, Turnos y Consultas Odontológicas - GEPTCOdont</strong></code>
     </div>
-	<div id="contenido" data-options="region:'center', title:'Contenido'" style="padding: 20px; /*background-image: url('/static/images/fondo.png'); */  background-image: linear-gradient(rgb(0, 82, 176) 0px, rgb(33, 144, 255) 50%, rgb(0, 82, 176) 100%); ">
-        <div style="position: absolute; margin: auto; display: block;">
-            <img src="/static/images/foto.jpg" style="height: 50%; display: inline-block">
-            <div style="display: inline-block">
-                <p>Un Concepto Nuevo en Odontología</p>
-                <p>Confianza</p>
-                <p>Calidad</p>
-                <p>Atención Integral</p>
-            </div>
+	<div id="contenido" data-options="region:'center', title:'Contenido'" style="padding: 20px; background-repeat: no-repeat; background-position: bottom center, center, center; background-image: url('/static/images/fondo_base.png'), url('/static/images/fondo_letras.png'), url('/static/images/fondo.png'); background-size: auto, 500px, 100% 100%;   /*class=degradado*/ " >
+        <div style="display: block; background: url('/static/images/fondo_letras.png') no-repeat; background-size: 370px; margin: 100px auto auto auto; ">
         </div>
 	</div>
 
@@ -188,16 +202,22 @@
 	</div>
 
     <div id="ventanaPaciente" class="easyui-window" title="Paciente" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
-         style="width:470px; height:353px; padding:10px;">
+         style="width:520px; height:345px; padding:10px;">
 	</div>
     <div id="ventanaMedico" class="easyui-window" title="Medico" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
-         style="width:470px; height:210px; padding:10px;">
+         style="width:500px; height:210px; padding:10px;">
 	</div>
     <div id="ventanaTurno" class="easyui-window" title="Asignar turno" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
-         style="width:470px; height:205px; padding:10px;">
+         style="width:520px; height:205px; padding:10px;">
 	</div>
     <div id="ventanaConsulta" class="easyui-window" title="Asignar consulta" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
          style="width:90%; height:500px; padding:10px;">
+	</div>
+    <div id="ventanaServicio" class="easyui-window" title="Servicio" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:500px; height:160px; padding:10px;">
+	</div>
+    <div id="ventanaProducto" class="easyui-window" title="Producto" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
+         style="width:500px; height:190px; padding:10px;">
 	</div>
     <div id="ventanaConsultaPaciente" class="easyui-window" title="Historial" data-options="modal:true, closed:true, minimizable:false, maximizable: false, resizable:false, collapsible:false, iconCls:'icon-save'"
          style="width:750px; height:500px; padding:10px;">

@@ -249,10 +249,10 @@
                     <tr>
                         <td>Paciente: </td>
                         <td>
-                            <select class="easyui-combobox" data-options="required:true,editable:false" name="paciente" id="paciente_consulta" readonly >
+                            <select class="easyui-combobox" data-options="required:true,editable:false" name="paciente" id="paciente_consulta" readonly style="width: 350px" >
                                 {% for pac in pacientes %}
                                     {% if pac.nro_historia == objeto.paciente or pac.nro_historia == paciente_id %}
-                                        <option value="{{ pac.nro_historia }}" selected="selected">{{ pac.apellidos }} {{ pac.nombres }}</option>
+                                        <option value="{{ pac.nro_historia }}" selected="selected">{{ pac.nro_historia }} - {{ pac.apellidos }} {{ pac.nombres }}</option>
                                     {% else %}
                                         <option value="{{ pac.nro_historia }}">{{ pac.apellidos }} {{ pac.nombres }}</option>
                                     {%  endif %}
